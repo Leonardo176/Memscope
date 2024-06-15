@@ -1,6 +1,7 @@
 #include "mempart.h"
 
-static bool memoryIsInside(struct meminfo parent, size_t offset, size_t size)
+// This function checks if the given offset (bytes after the address of the parent) with the given size is inside the parent memory
+static bool isMemoryInside(struct meminfo parent, size_t offset, size_t size)
 {
 	return (offset > 0) && (size > 0) && ((offset + size) < parent.size);
 }
@@ -21,7 +22,7 @@ struct mempart init(struct mempart parent, size_t offset, size_t size)
 {
 	struct mempart mempart = {};
 
-	if(Mempart.isValid(parent) && memoryIsInside(parent.current, offset, size))
+	if(Mempart.isValid(parent) && isMemoryInside(parent.current, offset, size))
 	{
 		mempart.parent = &parent;
 
