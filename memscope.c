@@ -22,7 +22,7 @@ static void low_free(struct meminfo memory)
 	}
 }
 
-void alloc(size_t size, void (*run)(struct meminfo* memory))
+void alloc(size_t size, memfunc run)
 {
 	if(run != NULL && size > 0) {
 		void* addr = low_alloc(size);
