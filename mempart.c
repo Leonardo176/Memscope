@@ -1,12 +1,23 @@
 #include "mempart.h"
 
+#include <stdint.h>
+
+static size_t safe_sum(size_t s1, size_t s2)
+{
+	bool overflow = (s1 + s2) < s1 || (s1 + s2) < s2;
+
+	if(overflow) {
+		return SIZE_MAX;
+	}else return s1 + s2;
+}
+
 // This function checks if the given offset (bytes after the address of the parent) with the given size is inside the parent memory
 static bool isMemoryInside(struct meminfo parent, size_t offset, size_t size)
 {
-	return (offset > 0) && (size > 0) && ((offset + size) < parent.size);
+	return (offset >= 0) && (size > 0) && (safe_sum(offset,  size) <= parent.size);
 }
 
-struct mempart initRoot(struct meminfo meminfo)
+struct mempart mempart_initRoot(struct meminfo meminfo)
 {
 	struct mempart root = {};
 
@@ -18,7 +29,7 @@ struct mempart initRoot(struct meminfo meminfo)
 	return root;
 }
 
-struct mempart init(struct mempart parent, size_t offset, size_t size)
+struct mempart mempart_init(struct mempart parent, size_t offset, size_t size)
 {
 	struct mempart mempart = {};
 
@@ -33,7 +44,7 @@ struct mempart init(struct mempart parent, size_t offset, size_t size)
 	return mempart;
 }
 
-struct meminfo getRoot(struct mempart mempart)
+struct meminfo mempart_getRoot(struct mempart mempart)
 {
 	struct mempart* parent = mempart.parent;
 	struct meminfo root = mempart.current;
@@ -46,22 +57,22 @@ struct meminfo getRoot(struct mempart mempart)
 	return root;
 }
 
-bool isValid(struct mempart mempart)
+bool mempart_isValid(struct mempart mempart)
 {
 	return Meminfo.isValid(mempart.current);
 }
 
-bool isRoot(struct mempart mempart)
+bool mempart_isRoot(struct mempart mempart)
 {
 	return Mempart.isValid(mempart) && mempart.parent == NULL;
 }
 
 const struct mempart_f Mempart = {
-	.init = init,
-	.initRoot = initRoot,
+	.init = mempart_init,
+	.initRoot = mempart_initRoot,
 
-	.getRoot = getRoot,
+	.getRoot = mempart_getRoot,
 
-	.isValid = isValid,
-	.isRoot = isRoot
+	.isValid = mempart_isValid,
+	.isRoot = mempart_isRoot
 };

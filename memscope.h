@@ -16,6 +16,8 @@ typedef void (*memfunc)(struct meminfo*);
 struct memscope_f {
 	void (*alloc)(size_t n, memfunc func);
 	void (*realloc)(struct meminfo* memory, size_t newSize);
+
+	void (*borrow)(struct meminfo* memory, size_t offset, size_t size, memfunc func);
 };
 
 extern const struct memscope_f Memscope;

@@ -1,3 +1,3 @@
 project('memscope', 'c')
 
-library('memscope', 'meminfo.c', 'memscope.c')
+library('memscope', 'meminfo.c', 'mempart.c', 'memscope.c')

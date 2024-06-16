@@ -45,7 +45,21 @@ void memscope_realloc(struct meminfo* memory, size_t newSize)
 	}
 }
 
+void borrow(struct meminfo* memory, size_t offset, size_t size, memfunc run)
+{
+	if(memory != NULL) {
+		struct mempart allMem = Mempart.initRoot(*memory);
+
+		struct mempart partialMem = Mempart.init(allMem, offset, size);
+
+		if(Mempart.isValid(partialMem)) {
+			run(&partialMem.current);
+		}
+	}
+}
+
 const struct memscope_f Memscope = {
 	.alloc = alloc,
-	.realloc = memscope_realloc
+	.realloc = memscope_realloc,
+	.borrow = borrow
 };
